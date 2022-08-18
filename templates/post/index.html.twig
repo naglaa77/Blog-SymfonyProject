@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home Page!{% endblock %}
+
+{% block body %}
+<style>
+    .posts {
+        border-radius: 10px;
+        box-shadow: 0 10px 16px rgba(0,0,0,.25);
+        margin-bottom: 40px;
+        margin-top: 40px;
+        padding: 40px;  
+    }
+    img {
+        border-radius: 10px;
+    }
+</style>
+    {% for post in posts %}
+        <section class="posts">
+            <article>
+                <h2>{{post.title}}</h2>
+                <div class="metadat">   
+                    {{post.createdAt | date('Y-m-d')}} at {{post.createdAt | date('H:i')}} byjohn
+                    <span class="badge bg-success">{{post.category.title}}</span>
+                    5 comments
+                </div>
+                <div class="content">
+                    <img src="https://picsum.photos/seed/picsum/300/200" alt="" class="mt-3 mb-3">
+                    <p>{{post.content}}</p>
+                    <a href="{{path('post_show',{'id':post.id})}}">Read more</a>
+                </div>
+            </article>
+        </section>
+    {% endfor %} 
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(posts) }}
+    </div>
+    
+{% endblock %}
+
