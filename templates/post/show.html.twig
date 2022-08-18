@@ -16,6 +16,14 @@
         border-radius: 10px;
     }
 </style>
+
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success mt-5 text-center">
+        {{ message }}
+    </div>
+{% endfor %}
+
         <section class="posts">
         <article>
             <h2>{{post.title}}</h2>
@@ -27,7 +35,7 @@
             <div class="content">
                 <img src="https://picsum.photos/seed/picsum/300/200" alt="" class="mt-3 mb-3">
                 <p>{{post.title}}</p>
-                <a href="#">Read more</a>
+                <a href="{{path('post_edit', {'id':post.id})}}">Edit the post</a>
             </div>
         </article>
     </section>

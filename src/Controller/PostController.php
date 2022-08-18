@@ -47,6 +47,11 @@ class PostController extends AbstractController
             $entityManager->persist($post);
             $entityManager->flush();
 
+            $this->addFlash(
+            'success',
+            'Your message is added'
+            );
+
            return  $this->redirectToRoute('post');
         }
 
@@ -55,6 +60,8 @@ class PostController extends AbstractController
 
         ]);
     }
+
+
 
     #[Route('/post/{id}', name: 'post_show')]
     public function show(Request $request, PostRepository $postRepository): Response
@@ -68,5 +75,28 @@ class PostController extends AbstractController
         ]);
     }
 
+    // modify new post (edit)
+    #[Route('/post/{id}/edit', name: 'post_edit')]
 
+    public function edit (Post $post, Request $request,ManagerRegistry $doctrine) { // it take two param the text and request
+        
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $doctrine->getManager();           
+            $entityManager->persist($post);
+            $entityManager->flush();
+            
+            $this->addFlash(
+            'success',
+            'Your message is edited'
+            );
+            return $this->redirectToRoute('post_show',['id'=>$post->getId()]);
+        }
+        return $this->render('post/edit.html.twig',[
+            'post'=>$post,
+            'editForm'=>$form->createView()
+    
+        ]);
+    }
 }
