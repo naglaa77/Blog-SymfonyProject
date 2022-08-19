@@ -31,7 +31,7 @@
                 <div class="metadat">   
                     {{post.createdAt | date('Y-m-d')}} at {{post.createdAt | date('H:i')}} byjohn
                     <span class="badge bg-success">{{post.category.title}}</span>
-                    5 comments
+                    {{post.comments | length}} {{(post.comments | length <=1) ? 'comment' : 'comments'}}
                 </div>
                 <div class="content">
                     <img src="https://picsum.photos/seed/picsum/300/200" alt="" class="mt-3 mb-3">

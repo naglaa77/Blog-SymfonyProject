@@ -5,6 +5,8 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Repository\PostRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
@@ -64,14 +66,23 @@ class PostController extends AbstractController
 
 
     #[Route('/post/{id}', name: 'post_show')]
-    public function show(Request $request, PostRepository $postRepository): Response
+    public function show(Request $request, PostRepository $postRepository,ManagerRegistry $doctrine): Response
     {
         $postId = $request->attributes->get('id');
        
         $post = $postRepository->find($postId);
+
+        // for comments
+        $comment = new Comment();
+        $commentForm = $this->createForm(CommentType::class,$comment);//it take the from and entity
+        $commentForm->handleRequest($request);
         
+        $this->addComment($commentForm, $comment, $post, $doctrine);
+    
+
         return $this->render('post/show.html.twig',[
             'post' => $post,
+            'commentForm'=>$commentForm->createView()
         ]);
     }
 
@@ -98,5 +109,23 @@ class PostController extends AbstractController
             'editForm'=>$form->createView()
     
         ]);
+    }
+
+    // add comment
+    private function addComment($commentForm, $comment, $post,ManagerRegistry $doctrine) {
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            
+            $comment->setCreatedAt(new DateTime());
+            $comment-> setPost($post);
+            $entityManager = $doctrine->getManager();           
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            $this->addFlash(
+            'success',
+            'Your comment is added'
+            );
+            return $this->redirectToRoute('post_show',['id'=>$post->getId()]);
+        }
+
     }
 }

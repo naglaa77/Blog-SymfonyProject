@@ -1,4 +1,6 @@
 {% extends "base.html.twig" %}
+{% form_theme commentForm 'bootstrap_4_layout.html.twig'%}
+
 {% block title %}
     Post Show!
 {% endblock %}
@@ -30,7 +32,8 @@
             <div class="metadat">   
                {{post.createdAt | date('Y-m-d')}} at {{post.createdAt | date('H:i')}} byjohn
                 <span class="badge bg-success">{{post.category.title}}</span>
-                5 comments
+                {{post.comments | length}} {{(post.comments | length <=1) ? 'comment' : 'comments'}}
+
             </div>
             <div class="content">
                 <img src="https://picsum.photos/seed/picsum/300/200" alt="" class="mt-3 mb-3">
@@ -39,14 +42,25 @@
             </div>
         </article>
     </section>
-    <h2 class="mt-5"> 5 Comments</h2>
+    <h2 class="mt-5">{{post.comments | length}} {{(post.comments | length <=1) ? 'comment' : 'comments'}}
+</h2>
     <section class="mt-5">
+        {% for comment in post.comments %}
         <div class="card-header">
-            mohammed <small> 2021-10-16 at 11:40</small>
+            {{comment.author}} <small> {{comment.createdAt | date('Y-m-d')}} at {{comment.createdAt | date('H:i')}}</small>
         </div>
         <div class="card-body">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus, consequuntur culpa quos nesciunt quisquam sapiente fugit tempora sequi doloribus nostrum iure, fugiat, inventore mollitia quibusdam vitae voluptates a incidunt obcaecati.</p>
+            <p>{{comment.content}}</p>
             
         </div>
+        {% endfor %}
     </section>
+    <hr>
+    <h2>Add Comment</h2>
+    {{form_start(commentForm)}}
+    {{form_widget(commentForm)}}
+    
+    <button class="btn btn-success mt-5">Add Comment</button>
+
+    {{form_end(commentForm)}}
 {% endblock %}
