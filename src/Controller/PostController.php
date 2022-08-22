@@ -39,6 +39,9 @@ class PostController extends AbstractController
 
     public function create(Request $request, ManagerRegistry $doctrine) {
         
+        if (!$this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
         $post = new Post(); // represent table post in db so i take instance of it
         $form = $this->createForm(PostType::class,$post);// data type, data
         $form->handleRequest($request);
