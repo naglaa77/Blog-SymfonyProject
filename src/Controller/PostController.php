@@ -48,6 +48,7 @@ class PostController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()) {
             $post->setCreatedAt(new DateTime());
+            $post->setAuthor($this->getUser());
             $entityManager = $doctrine->getManager();           
             $entityManager->persist($post);
             $entityManager->flush();
@@ -94,6 +95,10 @@ class PostController extends AbstractController
 
     public function edit (Post $post, Request $request,ManagerRegistry $doctrine) { // it take two param the text and request
         
+        if ($this->getUser() !== $post->getAuthor()) {
+            throw $this->createAccessDeniedException();
+        }
+
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {

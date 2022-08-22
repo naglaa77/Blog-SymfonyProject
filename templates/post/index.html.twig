@@ -29,7 +29,12 @@
             <article>
                 <h2>{{post.title}}</h2>
                 <div class="metadat">   
-                    {{post.createdAt | date('Y-m-d')}} at {{post.createdAt | date('H:i')}} byjohn
+                    {{post.createdAt | date('Y-m-d')}} at {{post.createdAt | date('H:i')}} 
+                    {% if post.author %}
+                        {{post.author.firstName}}
+                    {% else %}
+                        user
+                    {% endif %}
                     <span class="badge bg-success">{{post.category.title}}</span>
                     {{post.comments | length}} {{(post.comments | length <=1) ? 'comment' : 'comments'}}
                 </div>

@@ -44,6 +44,9 @@ class Post
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    private ?User $author = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -165,5 +168,17 @@ class Post
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
     }
 }
